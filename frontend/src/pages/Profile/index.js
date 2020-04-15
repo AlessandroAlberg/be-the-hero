@@ -9,32 +9,32 @@ import './styles.css';
 import logoImg from '../../assets/logo.svg';
 
 export default function Profile() {
-    const [incidents, setIncidents] = useState([]);
+    const [students, setStudents] = useState([]);
 
     const history  = useHistory();
 
-    const ongId = localStorage.getItem('ongId');
-    const ongName = localStorage.getItem('ongName');
+    const disciplineId = localStorage.getItem('disciplineId');
+    const disciplineName = localStorage.getItem('disciplineName');
 
     useEffect(() => {
         api.get('profile', {
             headers: {
-                Authorization: ongId,
+                Authorization: disciplineId,
             }
         }).then(response => {
-            setIncidents(response.data);
+            setStudents(response.data);
         })
-    }, [ongId]);
+    }, [disciplineId]);
 
-    async function handleDeleteIncident(id) {
+    async function handleDeleteStudent(id) {
         try {
-            await api.delete(`incidents/${id}`, {
+            await api.delete(`students/${id}`, {
                 headers: {
-                    Authorization: ongId,
+                    Authorization: disciplineId,
                 }
             });
 
-            setIncidents(incidents.filter(incident => incident.id !== id));
+            setStudents(students.filter(student => student.id !== id));
         } catch (err) {
             alert('Erro ao deletar caso, tente novamente.');
         }
@@ -50,29 +50,29 @@ export default function Profile() {
         <div className="profile-container">
             <header>
                 <img src={logoImg} alt="Be The Hero"/>
-                <span>Bem vinda, {ongName}</span>
+                <span>Bem vindo, {disciplineName}</span>
 
-                <Link className="button" to="/incidents/new">Cadastrar novo caso</Link>
+                <Link className="button" to="/student/new">Pedir dispensa</Link>
                 <button onClick={handleLogout} type="button">
                     <FiPower size={18} color="#E02041" />
                 </button>
             </header>
 
-            <h1>Casos cadastrados</h1>
+            <h1>Pedidos de Dispensa</h1>
 
             <ul>
-                {incidents.map(incident => (
-                    <li key={incident.id}>
-                        <strong>CASO:</strong>
-                        <p>{incident.title}</p>
+                {students.map(student => (
+                    <li key={student.id}>
+                        <strdiscipline>NOME DO ALUNO:</strdiscipline>
+                        <p>{student.name}</p>
 
-                        <strong>DESCRIÇÃO:</strong>
-                        <p>{incident.description}</p>
+                        <strdiscipline>CPF:</strdiscipline>
+                        <p>{student.cpf}</p>
 
-                        <strong>VALOR:</strong>
-                        <p>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(incident.value)}</p>
+                        <strdiscipline>MATRÍCULA:</strdiscipline>
+                        <p>{student.registration}</p>
 
-                        <button onClick={() => handleDeleteIncident(incident.id)} type="button">
+                        <button onClick={() => handleDeleteStudent(student.id)} type="button">
                             <FiTrash2 size={20} color="#a8a8b3" />
                         </button>
                     </li>

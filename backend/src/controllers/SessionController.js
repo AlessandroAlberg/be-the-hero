@@ -4,15 +4,15 @@ module.exports = {
     async create(request, response) {
         const { id } = request.body;
 
-        const ong = await connection('ongs')
+        const discipline = await connection('disciplines')
             .where('id', id)
             .select('name')
             .first();
 
-        if (!ong) {
-            return response.status(400).json({ error: 'No ONG found with this ID' });
+        if (!discipline) {
+            return response.status(400).json({ error: 'No discipline found with this ID' });
         }
 
-        return response.json(ong);
+        return response.json(discipline);
     }
 }

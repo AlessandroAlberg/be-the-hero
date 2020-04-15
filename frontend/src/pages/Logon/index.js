@@ -1,17 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { FiLogIn } from 'react-icons/fi';
+import { FiLogIn, FiTrash2 } from 'react-icons/fi';
 
 import api from '../../services/api';
 
-import './styles.css'
+import './styles.css';
 
 import logoImg from '../../assets/logo.svg';
-import heroesImg from '../../assets/heroes.png';
 
 export default function Logon() {
     const [id, setId] = useState('');
+    const [students, setStudents] = useState([]);
     const history = useHistory();
+    const [disciplines, setDiscipline] = useState([]);
+
+    useEffect(() => {
+        api.get('disciplines'
+        ).then(response => {
+            setDiscipline(response.data);
+        })
+    }, [id]);
+
+    useEffect(() => {
+        api.get('profile', {
+            headers: {
+                Authorization: id,
+            }
+        }).then(response => {
+            setStudents(response.data);
+        })
+    }, [id]);
+
+    async function handleDeleteDiscipline(id) {
+        try {
+            await students.map(student => (api.delete(`students/${student.id}`)));
+            await api.delete(`disciplines/${id}`);
+
+            setDiscipline(disciplines.filter(discipline => discipline.id !== id));
+        } catch (err) {
+            alert('Erro ao deletar caso, tente novamente.');
+        }
+    }
 
     async function handleLogin(e) {
         e.preventDefault();
@@ -19,8 +48,8 @@ export default function Logon() {
         try {
             const response = await api.post('sessions', { id });
 
-            localStorage.setItem('ongId', id);
-            localStorage.setItem('ongName', response.data.name);
+            localStorage.setItem('disciplineId', id);
+            localStorage.setItem('disciplineName', response.data.name);
 
             history.push('/profile');
         } catch (err) {
@@ -37,7 +66,7 @@ export default function Logon() {
                     <h1>Faça seu logon</h1>
 
                     <input 
-                        placeholder="Sua Id" 
+                        placeholder="Código da Disciplina" 
                         value={id}
                         onChange={e => setId(e.target.value)}
                     />
@@ -46,12 +75,37 @@ export default function Logon() {
 
                     <Link className="back-link" to="/register">
                         <FiLogIn size={16} color="#E02041" />
-                        Não tenho cadastro
+                        Cadastrar Disciplina
                     </Link>
                 </form>
             </section>
 
-            <img src={heroesImg} alt="Heroes"/>
+            <div className="profile-container">
+
+                <h1>Disciplinas</h1>
+
+                <ul>
+                    {disciplines.map(discipline => (
+                        <li key={discipline.id}>
+                            <strdiscipline>CÓDIGO:</strdiscipline>
+                            <p>{discipline.id}</p>
+
+                            <strdiscipline>NOME DA DISCIPLINA:</strdiscipline>
+                            <p>{discipline.name}</p>
+
+                            <strdiscipline>CARGA HORÁRIA:</strdiscipline>
+                            <p>{discipline.workload}</p>
+
+                            <strdiscipline>CRÉDITO:</strdiscipline>
+                            <p>{discipline.credit}</p>
+
+                            <button onClick={() => handleDeleteDiscipline(discipline.id)} type="button">
+                                <FiTrash2 size={20} color="#a8a8b3" />
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 }
