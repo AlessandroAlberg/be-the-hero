@@ -8,28 +8,28 @@ import './styles.css';
 
 import logoImg from '../../assets/logo.svg';
 
-export default function NewIncident() {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [value, setValue] = useState('');
+export default function NewStudent() {
+    const [name, setName] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [registration, setRegistration] = useState('');
 
     const history =  useHistory();
 
-    const ongId = localStorage.getItem('ongId');
+    const disciplineId = localStorage.getItem('disciplineId');
 
-    async function handleNewIncident(e) {
+    async function handleNewStudent(e) {
         e.preventDefault();
 
         const data = {
-            title,
-            description,
-            value,
+            name,
+            cpf,
+            registration,
         };
 
         try {
-            await  api.post('incidents', data, {
+            await  api.post('students', data, {
                 headers: {
-                    Authorization: ongId,
+                    Authorization: disciplineId,
                 }
             })
 
@@ -40,13 +40,13 @@ export default function NewIncident() {
     }
 
     return (
-        <div className="new-incident-container">
+        <div className="new-student-container">
             <div className="content">
                 <section>
                     <img src={logoImg} alt="Be The Hero"/>
 
-                    <h1>Cadastrar novo caso</h1>
-                    <p>Descreva o caso detalhadamente para encontrar um herói para resolver isso.</p>
+                    <h1>Cadastrar novo aluno</h1>
+                    <p>Preencha os dados do aluno que está pedindo despensa.</p>
 
                     <Link className="back-link" to="/profile">
                         <FiArrowLeft size={16} color="#E02041" />
@@ -54,21 +54,21 @@ export default function NewIncident() {
                     </Link>
                 </section>
 
-                <form onSubmit={handleNewIncident}>
+                <form onSubmit={handleNewStudent}>
                     <input 
-                        placeholder="Título do caso"
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
+                        placeholder="Nome do Aluno"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
                     />
                     <textarea 
-                        placeholder="Descrição"
-                        value={description}
-                        onChange={e => setDescription(e.target.value)}
+                        placeholder="CPF"
+                        value={cpf}
+                        onChange={e => setCpf(e.target.value)}
                     />
                     <input 
-                        placeholder="Valor em reais"
-                        value={value}
-                        onChange={e => setValue(e.target.value)}
+                        placeholder="Matrícula"
+                        value={registration}
+                        onChange={e => setRegistration(e.target.value)}
                     />
 
                     <button className="button" type="submit">Cadastrar</button>
